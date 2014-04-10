@@ -1,7 +1,6 @@
 package model
 
 import play.api.db.slick.Config.driver.simple._
-import scala.slick.session.Session
 
 
 /**
@@ -11,12 +10,12 @@ import scala.slick.session.Session
 
 case class User( login: String, UserStatus: String)
 
-object Users extends Table[(String,UserStatus)]("users") {
+class Users(tag: Tag) extends Table[(String,UserStatus)](tag,"users") {
   def login = column[String]("login")
 
   def status = column[UserStatus]("status")
 
-  def * = login ~ status
+  def * = (login , status)
 }
 
 

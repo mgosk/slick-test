@@ -7,12 +7,12 @@ package model
 import play.api.libs.json._
 import play.api.libs.json.JsString
 import play.api.libs.json.JsSuccess
-import scala.slick.lifted.MappedTypeMapper
+import play.api.db.slick.Config.driver.simple._
 
 trait SerializableEnum[T] {
   def mapping: Map[String, T]
 
-  def reverseMapping = mapping.map(_.swap)
+  def reverseMapping:Map[T,String] = mapping.map(_.swap)
 
   implicit def enumWrites = new Writes[T] {
     def writes(o: T): JsValue = JsString(reverseMapping(o))
@@ -24,5 +24,5 @@ trait SerializableEnum[T] {
       case _ => JsError("Enum type should be of proper type")
     }
   }
-  implicit val enumTypeMapper = MappedTypeMapper.base[T, String](reverseMapping, mapping)
+  implicit val enumTypeMapper = MappedColumnType.base[T, String](reverseMapping, mapping)
 }
